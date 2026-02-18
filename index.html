@@ -1,53 +1,39 @@
+oss_v2"}
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Fat Loss Tracker</title>
-
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background: #f4f6f8;
-    padding: 30px;
-  }
-
-  h1 {
-    color: #ff4d4d;
-  }
-
-  .card {
-    background: white;
-    padding: 20px;
-    margin: 20px auto;
-    width: 300px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  }
-
-  input, button {
-    padding: 10px;
-    margin: 8px;
-    width: 80%;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-  }
-
-  button {
-    background: #ff4d4d;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-
-  button:hover {
-    background: #e63c3c;
-  }
-
-  #history {
-    margin-top: 15px;
-    text-align: left;
-  }
+body{
+  font-family: Arial, sans-serif;
+  background:#f5f6fa;
+  text-align:center;
+}
+.card{
+  background:white;
+  padding:20px;
+  margin:20px auto;
+  width:320px;
+  border-radius:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+input,button{
+  padding:10px;
+  margin:6px;
+  width:85%;
+}
+button{
+  background:#e74c3c;
+  color:white;
+  border:none;
+  border-radius:6px;
+}
+h1{color:#e74c3c;}
+.summary{
+  font-weight:bold;
+  margin-top:10px;
+}
 </style>
 </head>
 
@@ -55,42 +41,105 @@
 
 <h1>🔥 Fat Loss Tracker</h1>
 
+<!-- WEIGHT -->
 <div class="card">
-  <h3>Enter Today's Weight</h3>
-  <input type="number" id="weightInput" placeholder="Enter weight (kg)">
-  <br>
-  <button onclick="saveWeight()">Save</button>
+<h3>Enter Today's Weight</h3>
+<input id="weightInput" placeholder="Enter weight (kg)">
+<button onclick="saveWeight()">Save</button>
+<div id="weightHistory"></div>
+</div>
 
-  <div id="history"></div>
+<!-- FOOD -->
+<div class="card">
+<h3>🍽️ Food Tracker</h3>
+<input id="foodName" placeholder="Food name">
+<input id="foodCalories" placeholder="Calories">
+<button onclick="addFood()">Add Food</button>
+<div id="foodList"></div>
+</div>
+
+<!-- WALKING -->
+<div class="card">
+<h3>🚶 Walking Tracker</h3>
+<input id="stepsInput" placeholder="Steps walked">
+<button onclick="addSteps()">Add Steps</button>
+<div id="walkInfo"></div>
+</div>
+
+<!-- SUPPLEMENTS -->
+<div class="card">
+<h3>💊 Supplements</h3>
+<input id="suppInput" placeholder="Supplement name">
+<button onclick="addSupplement()">Add</button>
+<div id="suppList"></div>
+</div>
+
+<!-- SUMMARY -->
+<div class="card">
+<h3>📊 Daily Summary</h3>
+<div id="summary" class="summary"></div>
 </div>
 
 <script>
-let weights = JSON.parse(localStorage.getItem("weights")) || [];
+let foodTotal = 0;
+let burnedTotal = 0;
 
-function saveWeight() {
-  const weight = document.getElementById("weightInput").value;
-  if (!weight) return;
-
-  const Today = new Date().toLocaleDateString();
-  weights.push({ date: Today, weight: weight });
-
-  localStorage.setItem("weights", JSON.stringify(weights));
-  document.getElementById("weightInput").value = "";
-
-  showHistory();
+// WEIGHT
+function saveWeight(){
+  const w = document.getElementById("weightInput").value;
+  localStorage.setItem("weight", w);
+  document.getElementById("weightHistory").innerText =
+    "Latest weight: " + w + " kg";
 }
 
-function showHistory() {
-  const historyDiv = document.getElementById("history");
-  historyDiv.innerHTML = "<h4>History:</h4>";
+// FOOD
+function addFood(){
+  const name = document.getElementById("foodName").value;
+  const cal = Number(document.getElementById("foodCalories").value);
+  if(!name || !cal) return;
 
-  weights.slice().reverse().forEach(entry => {
-    historyDiv.innerHTML += `<p>${entry.date} — ${entry.weight} kg</p>`;
-  });
+  foodTotal += cal;
+
+  const div = document.createElement("div");
+  div.innerText = name + " — " + cal + " kcal";
+  document.getElementById("foodList").appendChild(div);
+
+  updateSummary();
 }
 
-showHistory();
+// WALKING
+function addSteps(){
+  const steps = Number(document.getElementById("stepsInput").value);
+  if(!steps) return;
+
+  const burned = Math.round(steps * 0.04); // approx
+  burnedTotal += burned;
+
+  document.getElementById("walkInfo").innerText =
+    "Burned: " + burned + " kcal";
+
+  updateSummary();
+}
+
+// SUPPLEMENTS
+function addSupplement(){
+  const s = document.getElementById("suppInput").value;
+  if(!s) return;
+
+  const div = document.createElement("div");
+  div.innerText = s;
+  document.getElementById("suppList").appendChild(div);
+}
+
+// SUMMARY
+function updateSummary(){
+  const net = foodTotal - burnedTotal;
+
+  document.getElementById("summary").innerHTML =
+    "Calories In: " + foodTotal + "<br>" +
+    "Calories Burned: " + burnedTotal + "<br>" +
+    "Net Calories: " + net;
+}
 </script>
 
-</body>
-</html>
+</body
