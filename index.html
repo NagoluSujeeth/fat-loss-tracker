@@ -1,11 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Fat Loss Tracker</title>
+<meta charset="UTF-8">
+<title>Fat Loss Tracker</title>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: #f4f6f8;
+    padding: 30px;
+  }
+
+  h1 {
+    color: #ff4d4d;
+  }
+
+  .card {
+    background: white;
+    padding: 20px;
+    margin: 20px auto;
+    width: 300px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  input, button {
+    padding: 10px;
+    margin: 8px;
+    width: 80%;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+
+  button {
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: #e63c3c;
+  }
+
+  #history {
+    margin-top: 15px;
+    text-align: left;
+  }
+</style>
 </head>
+
 <body>
-  <h1>🔥 Fat Loss Tracker</h1>
-  <p>Your tracker is working!</p>
+
+<h1>🔥 Fat Loss Tracker</h1>
+
+<div class="card">
+  <h3>Enter Today's Weight</h3>
+  <input type="number" id="weightInput" placeholder="Enter weight (kg)">
+  <br>
+  <button onclick="saveWeight()">Save</button>
+
+  <div id="history"></div>
+</div>
+
+<script>
+let weights = JSON.parse(localStorage.getItem("weights")) || [];
+
+function saveWeight() {
+  const weight = document.getElementById("weightInput").value;
+  if (!weight) return;
+
+  const Today = new Date().toLocaleDateString();
+  weights.push({ date: Today, weight: weight });
+
+  localStorage.setItem("weights", JSON.stringify(weights));
+  document.getElementById("weightInput").value = "";
+
+  showHistory();
+}
+
+function showHistory() {
+  const historyDiv = document.getElementById("history");
+  historyDiv.innerHTML = "<h4>History:</h4>";
+
+  weights.slice().reverse().forEach(entry => {
+    historyDiv.innerHTML += `<p>${entry.date} — ${entry.weight} kg</p>`;
+  });
+}
+
+showHistory();
+</script>
+
 </body>
 </html>
