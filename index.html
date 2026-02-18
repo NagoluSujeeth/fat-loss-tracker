@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultimate Health Tracker</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: white;
+  padding: 20px;
+}
+.container {
+  max-width: 500px;
+  margin: auto;
+}
+.card {
+  background: #1e293b;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 12px;
+}
+button {
+  width: 100%;
+  padding: 12px;
+  background: #22c55e;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  margin-top: 10px;
+}
+input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  border-radius: 6px;
+  border: none;
+}
+h1 {
+  text-align: center;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+<h1>🔥 My Ultimate Tracker</h1>
+
+<div class="card">
+<h3>🍽 Meals</h3>
+<input id="mealInput" placeholder="What did you eat?">
+<button onclick="addMeal()">Add Meal</button>
+<ul id="mealList"></ul>
+</div>
+
+<div class="card">
+<h3>🚶 Walking Steps</h3>
+<input id="stepsInput" type="number" placeholder="Enter steps">
+<button onclick="saveSteps()">Save Steps</button>
+<p id="stepsDisplay"></p>
+</div>
+
+<div class="card">
+<h3>🎯 Habits</h3>
+<input id="habitInput" placeholder="Habit name">
+<button onclick="addHabit()">Add Habit</button>
+<ul id="habitList"></ul>
+</div>
+
+</div>
+
+<script>
+function addMeal() {
+  const input = document.getElementById("mealInput");
+  const list = document.getElementById("mealList");
+  if (!input.value) return;
+  const li = document.createElement("li");
+  li.textContent = input.value;
+  list.appendChild(li);
+  localStorage.setItem("meals", list.innerHTML);
+  input.value = "";
+}
+
+function saveSteps() {
+  const steps = document.getElementById("stepsInput").value;
+  localStorage.setItem("steps", steps);
+  document.getElementById("stepsDisplay").textContent =
+    "Saved Steps: " + steps;
+}
+
+function addHabit() {
+  const input = document.getElementById("habitInput");
+  const list = document.getElementById("habitList");
+  if (!input.value) return;
+  const li = document.createElement("li");
+  li.textContent = input.value;
+  list.appendChild(li);
+  localStorage.setItem("habits", list.innerHTML);
+  input.value = "";
+}
+
+window.onload = function () {
+  document.getElementById("mealList").innerHTML =
+    localStorage.getItem("meals") || "";
+  document.getElementById("habitList").innerHTML =
+    localStorage.getItem("habits") || "";
+  const steps = localStorage.getItem("steps");
+  if (steps)
+    document.getElementById("stepsDisplay").textContent =
+      "Saved Steps: " + steps;
+};
+</script>
+
+</body>
+</html>
